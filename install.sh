@@ -6,7 +6,7 @@ function hasprog {
 }
 
 function pkinstall {
-    echo "$1 not found, installing..."
+    printf "$1 not found, installing...\n"
     if hasprog "apt"; then 
         sudo apt install $1
     elif hasprog "apt-get"; then 
@@ -32,6 +32,7 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 1
 fi
 
+printf "checking for prerequisites...\n"
 # make sure both cowsay and fortune are installed
 if ! hasprog "cowsay"; then
     pkinstall "cowsay";
@@ -41,11 +42,12 @@ if ! hasprog "fortune"; then
     pkinstall "fortune-mod";
 fi
 
+printf "installing custom data...\n"
 # create a new data pointer
 if [ -f "sharkquotes.dat" ]; then
     rm "sharkquotes.dat"
 fi
-strfile "sharkquotes" "sharkquotes.dat"
+strfile "sharkquotes" "sharkquotes.dat" > /dev/null 2>&1
 
 # install all our files
 mkdir -p "/usr/share/fortune"
@@ -56,3 +58,9 @@ mkdir -p "/usr/local/share/cows"
 fileinstall "shark.cow" "/usr/share/cows/shark.cow"
 
 fileinstall "philososhark" "/usr/local/bin/philososhark"
+
+printf "succesfully installed!\n\n"
+
+fortune sharkquotes | cowsay -f shark
+
+printf "\ninstalled to /usr/local/bin/philososhark.\n"
