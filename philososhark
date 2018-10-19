@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+fortune sharkquotes | cowsay -f shark
